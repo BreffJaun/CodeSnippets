@@ -7,6 +7,9 @@ struct ContentView: View {
                 .imageScale(.large)
                 .foregroundStyle(.tint)
             Text("Hello, world!")
+            Button("Crash") {
+              fatalError("Crash was triggered")
+            }
         }
         .padding()
     }
