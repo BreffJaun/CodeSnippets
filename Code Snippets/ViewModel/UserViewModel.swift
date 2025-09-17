@@ -8,13 +8,14 @@
 import Foundation
 import Firebase
 import FirebaseAuth
+import FirebaseFirestore
 
 @MainActor
 class UserViewModel: ObservableObject {
-    
     private let auth = Auth.auth()
+    private let database = Firestore.firestore()
     
-    @Published var user: User?
+    @Published var user: FireUser?
     @Published var errorMessage: String?
     
     var isUserLoggedIn: Bool {
@@ -31,7 +32,7 @@ class UserViewModel: ObservableObject {
             return
         }
         print("🔍 User gefunden: \(currentUser.email ?? "Anonymous")")
-        user = currentUser
+        fetchUserById(currentUser.uid)
     }
     
     func loginAnonymously() {
@@ -40,7 +41,14 @@ class UserViewModel: ObservableObject {
             do {
                 let result = try await auth.signInAnonymously()
                 print("✅ Anonyme Anmeldung erfolgreich: \(result.user.uid)")
-                user = result.user
+                createUser(
+                    withId: result.user.uid,
+                    email: "",
+                    name: "",
+                    birthDate: nil,
+                    gender: nil,
+                    job: nil
+                )
                 errorMessage = nil
             } catch {
                 print("❌ Anonyme Anmeldung fehlgeschlagen: \(error.localizedDescription)")
@@ -49,14 +57,28 @@ class UserViewModel: ObservableObject {
         }
     }
     
-    func registerUser(email: String, password: String) {
+    func registerUser(
+        name: String,
+        birthDate: Date,
+        gender: Gender,
+        job: Job,
+        email: String,
+        password: String
+    ) {
         print("🚀 Versuche Registrierung für: \(email)")
         errorMessage = nil
         Task {
             do {
                 let result = try await auth.createUser(withEmail: email, password: password)
                 print("✅ Registrierung erfolgreich: \(result.user.email ?? "No Email")")
-                user = result.user
+                createUser(
+                    withId: result.user.uid,
+                    email: email,
+                    name: name,
+                    birthDate: birthDate,
+                    gender: gender,
+                    job: job
+                )
                 errorMessage = nil
             } catch {
                 print("❌ Registrierung fehlgeschlagen: \(error)")
@@ -76,7 +98,7 @@ class UserViewModel: ObservableObject {
             do {
                 let result = try await auth.signIn(withEmail: email, password: password)
                 print("✅ Login erfolgreich: \(result.user.email ?? "No Email")")
-                user = result.user
+                fetchUserById(result.user.uid)
                 errorMessage = nil
             } catch {
                 print("❌ Login fehlgeschlagen: \(error)")
@@ -99,6 +121,47 @@ class UserViewModel: ObservableObject {
         } catch {
             print("❌ Logout fehlgeschlagen: \(error)")
             errorMessage = error.localizedDescription
+        }
+    }
+    
+    private func createUser(
+        withId id: String,
+        email: String,
+        name: String?,
+        birthDate: Date?,
+        gender: Gender?,
+        job: Job?
+    ) {
+        let user = FireUser(
+            id: id,
+            email: email,
+            registeredOn: Date(),
+            name: name,
+            birthDate: birthDate,
+            gender: gender,
+            job: job
+        )
+        errorMessage = nil
+        do {
+            try database.collection("users").document(id).setData(from: user)
+            fetchUserById(id)
+        } catch {
+            errorMessage = error.localizedDescription
+            print(error)
+        }
+    }
+    
+    private func fetchUserById(_ id: String) {
+        errorMessage = nil
+        Task {
+            do {
+                let document = try await database.collection("users").document(id).getDocument()
+                let user = try document.data(as: FireUser.self)
+                self.user = user
+            } catch {
+                errorMessage = error.localizedDescription
+                print(error)
+            }
         }
     }
 }
