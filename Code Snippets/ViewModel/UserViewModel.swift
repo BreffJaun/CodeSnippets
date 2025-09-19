@@ -12,8 +12,10 @@ import FirebaseFirestore
 
 @MainActor
 class UserViewModel: ObservableObject {
-    private let auth = Auth.auth()
-    private let database = Firestore.firestore()
+    
+    private let auth = FirebaseManager.shared.auth
+    private let db = FirebaseManager.shared.database
+    
     
     @Published var user: FireUser?
     @Published var errorMessage: String?
@@ -28,19 +30,19 @@ class UserViewModel: ObservableObject {
     
     private func checkAuth() {
         guard let currentUser = auth.currentUser else {
-            print("🔍 Kein User angemeldet")
+            print("🔍 No user logged in")
             return
         }
-        print("🔍 User gefunden: \(currentUser.email ?? "Anonymous")")
+        print("🔍 User found: \(currentUser.email ?? "Anonymous")")
         fetchUserById(currentUser.uid)
     }
     
     func loginAnonymously() {
-        print("🚀 Versuche anonyme Anmeldung...")
+        print("🚀 Attempting anonymous login...")
         Task {
             do {
                 let result = try await auth.signInAnonymously()
-                print("✅ Anonyme Anmeldung erfolgreich: \(result.user.uid)")
+                print("✅ Anonymous login successful: \(result.user.uid)")
                 createUser(
                     withId: result.user.uid,
                     email: "",
@@ -51,7 +53,7 @@ class UserViewModel: ObservableObject {
                 )
                 errorMessage = nil
             } catch {
-                print("❌ Anonyme Anmeldung fehlgeschlagen: \(error.localizedDescription)")
+                print("❌ Anonymous login failed: \(error.localizedDescription)")
                 errorMessage = error.localizedDescription
             }
         }
@@ -65,12 +67,12 @@ class UserViewModel: ObservableObject {
         email: String,
         password: String
     ) {
-        print("🚀 Versuche Registrierung für: \(email)")
+        print("🚀 Attempting registration for: \(email)")
         errorMessage = nil
         Task {
             do {
                 let result = try await auth.createUser(withEmail: email, password: password)
-                print("✅ Registrierung erfolgreich: \(result.user.email ?? "No Email")")
+                print("✅ Registration successful: \(result.user.email ?? "No Email")")
                 createUser(
                     withId: result.user.uid,
                     email: email,
@@ -81,45 +83,45 @@ class UserViewModel: ObservableObject {
                 )
                 errorMessage = nil
             } catch {
-                print("❌ Registrierung fehlgeschlagen: \(error)")
+                print("❌ Registration failed: \(error)")
                 if let authError = error as NSError? {
                     print("❌ Auth Error Code: \(authError.code)")
                     print("❌ Auth Error Domain: \(authError.domain)")
                 }
-                errorMessage = "Registrierung fehlgeschlagen: \(error.localizedDescription)"
+                errorMessage = "Registration failed: \(error.localizedDescription)"
             }
         }
     }
     
     func loginUser(email: String, password: String) {
-        print("🚀 Versuche Login für: \(email)")
+        print("🚀 Attempting login for: \(email)")
         errorMessage = nil
         Task {
             do {
                 let result = try await auth.signIn(withEmail: email, password: password)
-                print("✅ Login erfolgreich: \(result.user.email ?? "No Email")")
+                print("✅ Login successful: \(result.user.email ?? "No Email")")
                 fetchUserById(result.user.uid)
                 errorMessage = nil
             } catch {
-                print("❌ Login fehlgeschlagen: \(error)")
+                print("❌ Login failed: \(error)")
                 if let authError = error as NSError? {
                     print("❌ Auth Error Code: \(authError.code)")
                     print("❌ Auth Error Domain: \(authError.domain)")
                 }
-                errorMessage = "Login fehlgeschlagen: \(error.localizedDescription)"
+                errorMessage = "Login failed: \(error.localizedDescription)"
             }
         }
     }
     
     func logout() {
-        print("🚀 Versuche Logout...")
+        print("🚀 Attempting logout...")
         do {
             try auth.signOut()
-            print("✅ Logout erfolgreich")
+            print("✅ Logout successful")
             user = nil
             errorMessage = nil
         } catch {
-            print("❌ Logout fehlgeschlagen: \(error)")
+            print("❌ Logout failed: \(error)")
             errorMessage = error.localizedDescription
         }
     }
@@ -143,7 +145,7 @@ class UserViewModel: ObservableObject {
         )
         errorMessage = nil
         do {
-            try database.collection("users").document(id).setData(from: user)
+            try db.collection(.users).document(id).setData(from: user)
             fetchUserById(id)
         } catch {
             errorMessage = error.localizedDescription
@@ -155,7 +157,7 @@ class UserViewModel: ObservableObject {
         errorMessage = nil
         Task {
             do {
-                let document = try await database.collection("users").document(id).getDocument()
+                let document = try await db.collection(.users).document(id).getDocument()
                 let user = try document.data(as: FireUser.self)
                 self.user = user
             } catch {
@@ -165,3 +167,5 @@ class UserViewModel: ObservableObject {
         }
     }
 }
+
+

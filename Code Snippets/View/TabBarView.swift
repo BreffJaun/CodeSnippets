@@ -20,7 +20,7 @@ struct TabBarView: View {
             
             
             Tab("Code Snippets", systemImage: "c.circle") {
-
+                SnippetListView()
             }
         }
     }
