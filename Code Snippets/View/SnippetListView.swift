@@ -5,67 +5,83 @@
 //  Created by Jeff Braun on 18.09.25.
 //
 
+// SnippetListView.swift
+
 import SwiftUI
+
 
 struct SnippetListView: View {
     
     @EnvironmentObject private var userViewModel: UserViewModel
-    @StateObject var snippetViewModel = SnippetViewModel()
+    @EnvironmentObject var snippetViewModel: SnippetViewModel
+    @EnvironmentObject var categoryViewModel: CategoryViewModel
     
-    @State private var title: String = ""
-    @State private var code: String = ""
+    @State private var isPresentingNewSnippetSheet = false
+    @State private var selectedSnippet: FireSnippet?
+    
+    private let fieldHeight: CGFloat = 54
     
     var body: some View {
-        VStack {
-            Text("Add new snippet")
-                .font(.headline)
-            
-            TextField("Title", text: $title)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-            
-            TextEditor(text: $code)
-                .frame(height: 200)
-                .cornerRadius(10)
-                .border(.gray, width: 0.5)
-            
-            Button("Add Snippet") {
-                Task {
-                    await snippetViewModel.addSnippet(title: title, code: code)
-                    if snippetViewModel.successMessage != nil  {
-                        title = ""
-                        code = ""
+        NavigationStack {
+            GradientBackground {
+                VStack(spacing: 0) {
+                    if snippetViewModel.snippets.isEmpty {
+                        Text("Keine Snippets vorhanden")
+                            .foregroundColor(.secondary)
+                            .padding()
+                    } else {
+                        List {
+                            ForEach(snippetViewModel.snippets) { snippet in
+                                SnippetListItemView(snippet: snippet)
+                                    .environmentObject(categoryViewModel)
+                                    .onTapGesture {
+                                        selectedSnippet = snippet
+                                    }
+                                    .listRowBackground(Color.clear)
+                                    .listRowSeparator(.hidden)
+                                    .listRowInsets(
+                                        EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16)
+                                    )
+                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                        Button(role: .destructive) {
+                                            snippetViewModel.deleteSnippet(snippet: snippet)
+                                        } label: {
+                                            Label("Löschen", systemImage: "trash")
+                                        }
+                                    }
+                            }
+                        }
+                        .listStyle(.plain)
+                        .scrollContentBackground(.hidden)
+                        .background(Color.clear)
+                        .navigationDestination(item: $selectedSnippet) { snippet in
+                            SnippetDetailView(snippet: snippet)
+                                .environmentObject(categoryViewModel)
+                        }
                     }
                 }
-            }
-            
-            if let successMessage = snippetViewModel.successMessage {
-                Text(successMessage)
-                    .foregroundColor(.green)
-            }
-            
-            if let errorMessage = snippetViewModel.errorMessage {
-                Text(errorMessage)
-                    .foregroundColor(.red)
-            }
-            
-            List(snippetViewModel.snippets) { snippet in
-                HStack {
-                    Text(snippet.title)
-                    Spacer()
-                    Text(snippet.code)
-                }
-                .swipeActions {
-                    Button("Delete", role: .destructive) {
-                        snippetViewModel.deleteSnippet(snippet: snippet)
+//                .padding()
+                .navigationTitle("My Snippets")
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            isPresentingNewSnippetSheet = true
+                        } label: {
+                            Image(systemName: "plus")
+                        }
                     }
                 }
+                .sheet(isPresented: $isPresentingNewSnippetSheet) {
+                    NewSnippetSheet(
+                        snippetViewModel: snippetViewModel,
+                        categoryViewModel: categoryViewModel
+                    )
+                }
             }
-        }
-        .onDisappear {
-            snippetViewModel.removeListener()
         }
     }
 }
+
 
 #Preview {
     SnippetListView()

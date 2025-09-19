@@ -13,27 +13,30 @@ struct AuthView: View {
     @State private var email = ""
     @State private var password = ""
     @State private var isRegistering = false
-
+    
     var body: some View {
         NavigationView {
-            VStack(spacing: 20) {
-                Picker("", selection: $isRegistering) {
-                    Text("Login").tag(false)
-                    Text("Registrieren").tag(true)
+            GradientBackground {
+                VStack(spacing: 20) {
+                    Picker("", selection: $isRegistering) {
+                        Text("Login").tag(false)
+                        Text("Registrieren").tag(true)
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
+                    .padding(.bottom)
+                    
+                    if isRegistering {
+                        RegisterView(email: $email, password: $password)
+                    } else {
+                        LoginView(email: $email, password: $password)
+                    }
+                    
+                    Spacer()
                 }
-                .pickerStyle(SegmentedPickerStyle())
-                .padding(.bottom)
-                
-                if isRegistering {
-                    RegisterView(email: $email, password: $password)
-                } else {
-                    LoginView(email: $email, password: $password)
-                }
-                
-                Spacer()
+                .padding()
+                .navigationTitle(isRegistering ? "Authentication" : "Login")
+                .toolbarBackground(.hidden, for: .navigationBar)
             }
-            .padding()
-            .navigationTitle("Authentication")
         }
     }
 }

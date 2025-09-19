@@ -24,7 +24,6 @@ class CategoryViewModel: ObservableObject {
         setupUserListener()
     }
     
-    // Automatisch den Listener bei An-/Abmeldung verwalten
     private func setupUserListener() {
         auth.addStateDidChangeListener { [weak self] _, user in
             guard let self = self else { return }
@@ -36,7 +35,6 @@ class CategoryViewModel: ObservableObject {
         }
     }
     
-    // Erstellen einer neuen Kategorie
     func addCategory(title: String) {
         guard let userId = FirebaseManager.shared.userId else {
             self.errorMessage = "User not logged in."
@@ -55,7 +53,6 @@ class CategoryViewModel: ObservableObject {
         }
     }
     
-    // Löschen einer Kategorie
     func deleteCategory(category: FireCategory) {
         guard let categoryId = category.id else { return }
         
@@ -68,7 +65,6 @@ class CategoryViewModel: ObservableObject {
         }
     }
     
-    // Echtzeit-Listener für Kategorien
     private func listenToCategories() {
         removeListener()
         guard let userId = FirebaseManager.shared.userId else {
@@ -93,7 +89,6 @@ class CategoryViewModel: ObservableObject {
             }
     }
     
-    // Listener entfernen
     func removeListener() {
         listenerRegistration?.remove()
         listenerRegistration = nil

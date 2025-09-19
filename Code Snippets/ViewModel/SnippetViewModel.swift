@@ -38,7 +38,7 @@ class SnippetViewModel: ObservableObject {
         }
     }
     
-    func addSnippet(title: String, code: String) async {
+    func addSnippet(title: String, code: String, categoryId: String?) async {
         print("🚀 Attempting to add a new snippet...")
         guard let userId = FirebaseManager.shared.userId else {
             print("❌ Error: User is not logged in. Cannot save snippet.")
@@ -49,7 +49,8 @@ class SnippetViewModel: ObservableObject {
         let snippet = FireSnippet(
             userId: userId,
             title: title,
-            code: code
+            code: code,
+            categoryId: categoryId
         )
         
         do {

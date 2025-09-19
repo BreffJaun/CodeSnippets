@@ -8,10 +8,11 @@
 import Foundation
 import FirebaseFirestore
 
-struct FireSnippet: Codable, Identifiable {
+struct FireSnippet: Codable, Identifiable, Hashable {
     @DocumentID var id: String?
     
     var userId: String
     var title: String
     var code: String
+    var categoryId: String?
 }

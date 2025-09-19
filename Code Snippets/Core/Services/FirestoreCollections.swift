@@ -11,4 +11,5 @@ import FirebaseFirestore
 enum FirestoreCollections: String {
     case users
     case snippets
+    case categories
 }

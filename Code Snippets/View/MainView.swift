@@ -9,13 +9,19 @@ import SwiftUI
 
 struct MainView: View {
     
-    @EnvironmentObject var userViewModel: UserViewModel
+    @StateObject private var userViewModel = UserViewModel()
+    @StateObject var snippetViewModel = SnippetViewModel()
+    @StateObject var categoryViewModel = CategoryViewModel()
     
     var body: some View {
         if userViewModel.isUserLoggedIn {
             TabBarView()
+                .environmentObject(userViewModel)
+                .environmentObject(snippetViewModel)
+                .environmentObject(categoryViewModel)
         } else {
             AuthView()
+                .environmentObject(userViewModel)
         }
     }
 }
@@ -23,4 +29,6 @@ struct MainView: View {
 #Preview {
     MainView()
         .environmentObject(UserViewModel())
+        .environmentObject(SnippetViewModel())
+        .environmentObject(CategoryViewModel())
 }

@@ -4,8 +4,6 @@ import Firebase
 @main
 struct Code_SnippetsApp: App {
     
-    @StateObject private var userViewModel = UserViewModel()
-    
     init() {
         FirebaseConfiguration.shared.setLoggerLevel(.min)
         FirebaseApp.configure()
@@ -15,7 +13,6 @@ struct Code_SnippetsApp: App {
         WindowGroup {
             MainView()
         }
-        .environmentObject(userViewModel)
     }
 }
 

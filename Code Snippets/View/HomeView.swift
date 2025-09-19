@@ -12,24 +12,26 @@ struct HomeView: View {
     @EnvironmentObject var userViewModel: UserViewModel
     
     var body: some View {
-        VStack(spacing: 20) {
-            Text("Willkommen zu deiner App!")
-                .font(.title)
-                .bold()
-            
-            Button(action: {
-                userViewModel.logout()
-            }) {
-                Text("Logout")
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.red)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
+        GradientBackground {
+            VStack(spacing: 20) {
+                Text("Willkommen zu deiner App!")
+                    .font(.title)
+                    .bold()
+                
+                Button(action: {
+                    userViewModel.logout()
+                }) {
+                    Text("Logout")
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.red)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+                Spacer()
             }
-            Spacer()
+            .padding()
         }
-        .padding()
     }
 }
 

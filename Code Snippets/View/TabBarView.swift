@@ -13,16 +13,15 @@ struct TabBarView: View {
     
     var body: some View {
         TabView {
-            
             Tab("User", systemImage: "person.circle") {
                 HomeView()
             }
-            
             
             Tab("Code Snippets", systemImage: "c.circle") {
                 SnippetListView()
             }
         }
+        .tint(Color("AccentColor"))
     }
 }
 

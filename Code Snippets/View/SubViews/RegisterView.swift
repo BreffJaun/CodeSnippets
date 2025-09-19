@@ -20,8 +20,9 @@ struct RegisterView: View {
     @State private var job: Job = .student
     
     private let fieldHeight: CGFloat = 54
-
+    
     var body: some View {
+        
         VStack(spacing: 16) {
             TextField("Name", text: $name)
                 .padding()
@@ -47,9 +48,10 @@ struct RegisterView: View {
                     }
                     .pickerStyle(MenuPickerStyle())
                     .frame(maxWidth: .infinity)
-                    .padding()
+                    .padding(.vertical, 8)
                     .background(Color(.secondarySystemBackground))
                     .cornerRadius(10)
+                    .fixedSize(horizontal: false, vertical: true)
                 }
                 .frame(maxWidth: .infinity)
                 .frame(height: fieldHeight)
@@ -65,18 +67,17 @@ struct RegisterView: View {
                     }
                     .pickerStyle(MenuPickerStyle())
                     .frame(maxWidth: .infinity)
-                    .padding()
+                    .padding(.vertical, 8)
                     .background(Color(.secondarySystemBackground))
                     .cornerRadius(10)
+                    .fixedSize(horizontal: false, vertical: true)
                 }
                 .frame(maxWidth: .infinity)
                 .frame(height: fieldHeight)
-                
             }
             .frame(maxWidth: .infinity)
-            .frame(height: fieldHeight)
-            .padding(.vertical)
-
+            .padding(.vertical, 8)
+            
             TextField("E-Mail", text: $email)
                 .textInputAutocapitalization(.never)
                 .keyboardType(.emailAddress)
@@ -119,18 +120,6 @@ struct RegisterView: View {
                     .cornerRadius(10)
             }
             .disabled(email.isEmpty || password.isEmpty)
-            
-            Button(action: {
-                userViewModel.loginAnonymously()
-            }) {
-                Text("Anonym anmelden")
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .frame(height: fieldHeight)
-                    .background(Color.gray.opacity(0.3))
-                    .foregroundColor(.black)
-                    .cornerRadius(10)
-            }
         }
     }
 }
