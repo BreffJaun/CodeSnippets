@@ -39,36 +39,34 @@ class SnippetViewModel: ObservableObject {
     }
     
     func addSnippet(title: String, code: String, categoryId: String?) async {
-        print("🚀 Attempting to add a new snippet...")
-        guard let userId = FirebaseManager.shared.userId else {
-            print("❌ Error: User is not logged in. Cannot save snippet.")
-            self.errorMessage = "User not logged in."
-            return
-        }
-        
-        let snippet = FireSnippet(
-            userId: userId,
-            title: title,
-            code: code,
-            categoryId: categoryId
-        )
-        
-        do {
-            print("📦 Creating snippet document for user ID: \(userId)")
-            try db.collection(.snippets).addDocument(from: snippet)
-            print("✅ Snippet successfully added.")
-            self.successMessage = "Snippet successfully added!"
-            self.errorMessage = nil
+            print("🚀 Attempting to add a new snippet...")
             
-            try? await Task.sleep(nanoseconds: 3_000_000_000)
-            self.successMessage = nil
+            guard let userId = FirebaseManager.shared.userId else {
+                self.errorMessage = "User not logged in."
+                print("❌ Error: User is not logged in. Cannot save snippet.")
+                return
+            }
             
-        } catch {
-            print("❌ Error saving the snippet: \(error.localizedDescription)")
-            self.errorMessage = "Error saving the snippet: \(error.localizedDescription)"
-            self.successMessage = nil
+            let snippet = FireSnippet(
+                userId: userId,
+                title: title,
+                code: code,
+                categoryId: categoryId
+            )
+            
+            do {
+                let _ = try db.collection(.snippets).addDocument(from: snippet)
+                
+                print("✅ Snippet successfully added.")
+                self.successMessage = "Snippet successfully added!"
+                self.errorMessage = nil
+                
+            } catch {
+                print("❌ Error saving the snippet: \(error.localizedDescription)")
+                self.errorMessage = "Error saving the snippet: \(error.localizedDescription)"
+                self.successMessage = nil
+            }
         }
-    }
     
     func deleteSnippet(snippet: FireSnippet) {
         guard let snippetId = snippet.id else { return }

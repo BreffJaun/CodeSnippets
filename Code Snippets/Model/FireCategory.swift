@@ -10,6 +10,7 @@ import FirebaseFirestore
 
 struct FireCategory: Codable, Identifiable {
     @DocumentID var id: String?
+    
     let userId: String
     var title: String
 }

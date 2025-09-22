@@ -16,6 +16,7 @@ struct NewSnippetSheet: View {
     @State private var title: String = ""
     @State private var code: String = ""
     @State private var selectedCategoryId: String? = nil
+    @State private var isShowingCategorySheet = false
     
     private let fieldHeight: CGFloat = 54
     
@@ -23,14 +24,31 @@ struct NewSnippetSheet: View {
         GradientBackground {
             VStack(spacing: 0) {
                 HStack {
-                    Button("Cancel") {
+                    Button {
                         dismiss()
+                    } label: {
+                        Image(systemName: "xmark")
+                            .font(.title3)
+                            .padding(8)
                     }
-                    .foregroundColor(.blue)
-
+                    .background(.ultraThinMaterial)
+                    .clipShape(Circle())
+                    .tint(Color("AccentColor"))
+                    
                     Spacer()
+                    
+                    Button {
+                        isShowingCategorySheet = true
+                    } label: {
+                        Image(systemName: "folder.badge.plus")
+                            .font(.title3)
+                            .padding(8)
+                    }
+                    .background(.ultraThinMaterial)
+                    .clipShape(Circle())
                 }
-                .padding()
+                .padding(.horizontal)
+                .padding(.top, 8)
                 
                 ScrollView {
                     VStack(spacing: 20) {
@@ -51,6 +69,8 @@ struct NewSnippetSheet: View {
                             .background(Color(.secondarySystemBackground))
                             .cornerRadius(10)
                             .scrollContentBackground(.hidden)
+                            .font(.system(.body, design: .monospaced))
+                            .foregroundColor(.primary)
                         
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Category")
@@ -93,8 +113,46 @@ struct NewSnippetSheet: View {
                         }
                         .disabled(title.isEmpty || code.isEmpty)
                     }
+                    .navigationTitle("New Snippet")
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("Cancel") {
+                                dismiss()
+                            }
+                        }
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button("Add Snippet") {
+                                Task {
+                                    await snippetViewModel.addSnippet(
+                                        title: title,
+                                        code: code,
+                                        categoryId: selectedCategoryId
+                                    )
+                                    if snippetViewModel.successMessage != nil {
+                                        dismiss()
+                                    }
+                                }
+                            }
+                            .disabled(title.isEmpty || code.isEmpty)
+                        }
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button(action: {
+                                isShowingCategorySheet = true
+                            }) {
+                                Label("Add Category", systemImage: "folder.badge.plus")
+                            }
+                        }
+                    }
+                    .sheet(isPresented: $isShowingCategorySheet) {
+                        CategoryListView()
+                            .environmentObject(categoryViewModel)
+                    }
                     .padding()
                 }
+            }
+            .sheet(isPresented: $isShowingCategorySheet) {
+                CategoryListView()
+                    .environmentObject(categoryViewModel)
             }
         }
     }

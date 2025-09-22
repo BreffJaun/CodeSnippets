@@ -8,21 +8,26 @@
 import SwiftUI
 
 struct CategoryListView: View {
+    @Environment(\.dismiss) var dismiss
     
     @EnvironmentObject private var categoryViewModel: CategoryViewModel
     @State private var newCategoryTitle: String = ""
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             GradientBackground {
                 VStack {
                     HStack {
                         TextField("New category title", text: $newCategoryTitle)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .padding()
+                            .background(Color(.secondarySystemBackground))
+                            .cornerRadius(10)
+                        
                         Button("Add") {
                             categoryViewModel.addCategory(title: newCategoryTitle)
                             newCategoryTitle = ""
                         }
+                        .tint(Color("AccentColor"))
                     }
                     .padding()
                     
@@ -39,6 +44,13 @@ struct CategoryListView: View {
                     .scrollContentBackground(.hidden)
                 }
                 .navigationTitle("Categories")
+                .toolbar {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Done") {
+                            dismiss()
+                        }
+                    }
+                }
             }
         }
     }
