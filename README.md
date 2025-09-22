@@ -7,7 +7,7 @@
 ![Firebase](https://img.shields.io/badge/Firebase-Yes-ffca28?logo=firebase&logoColor=black)  
 ![License: MIT](https://img.shields.io/badge/License-MIT-green)  
 
-<img src="Code_Snippets/Images/CodeSnippet.png" width="75%">  
+<img src="Code Snippets/Images/CodeSnippet.png" width="75%">  
 
 This SwiftUI app lets users **create, organize, and store their own code snippets**. ✨  
 Each snippet can be assigned to a **custom category**, making it easier to manage and reuse code.  
