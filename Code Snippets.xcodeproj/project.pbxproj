@@ -22,6 +22,7 @@
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		12A929552D96AD96000BB331 /* Code Snippets */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Code Snippets"; sourceTree = "<group>"; };
+		2D1962BF2E8187D8001663A2 /* Images */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Images; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +55,7 @@
 				2DA2D7902E78313C00E4D7E3 /* Frameworks */,
 				CE75F2882C8B152C001AD0A3 /* Products */,
 				2D3697292E7D80B200C6D3D2 /* GoogleService-Info.plist */,
+				2D1962BF2E8187D8001663A2 /* Images */,
 			);
 			sourceTree = "<group>";
 		};
@@ -83,6 +85,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				12A929552D96AD96000BB331 /* Code Snippets */,
+				2D1962BF2E8187D8001663A2 /* Images */,
 			);
 			name = "Code Snippets";
 			productName = "Code Snippets";
