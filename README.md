@@ -1,11 +1,11 @@
 # CodeSnippet  
 
-![Swift](https://img.shields.io/badge/Swift-5-orange?logo=swift&logoColor=white)  
-![Xcode](https://img.shields.io/badge/Xcode-16.4-blue?logo=xcode&logoColor=white)  
-![iOS](https://img.shields.io/badge/iOS-18.0-black?logo=apple&logoColor=white)  
-![SwiftUI](https://img.shields.io/badge/SwiftUI-Yes-brightgreen?logo=swift&logoColor=white)  
-![Firebase](https://img.shields.io/badge/Firebase-Yes-ffca28?logo=firebase&logoColor=black)  
-![License: MIT](https://img.shields.io/badge/License-MIT-green)  
+![Swift](https://img.shields.io/badge/Swift-5-orange?logo=swift&logoColor=white)
+![Xcode](https://img.shields.io/badge/Xcode-16.4-blue?logo=xcode&logoColor=white)
+![iOS](https://img.shields.io/badge/iOS-18.0-black?logo=apple&logoColor=white)
+![SwiftUI](https://img.shields.io/badge/SwiftUI-Yes-brightgreen?logo=swift&logoColor=white)
+![Firebase](https://img.shields.io/badge/Firebase-Yes-ffca28?logo=firebase&logoColor=black)
+![License: MIT](https://img.shields.io/badge/License-MIT-green)
 
 <img src="Images/CodeSnippets.png" width="75%">  
 
