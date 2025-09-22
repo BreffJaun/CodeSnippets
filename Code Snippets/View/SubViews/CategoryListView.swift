@@ -59,3 +59,4 @@ struct CategoryListView: View {
 #Preview {
     CategoryListView()
 }
+
